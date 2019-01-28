@@ -7,10 +7,14 @@
 import numpy
 import pandas
 import network
-import multiprocessing
 
 TRAIN_FILE = "../mnist_train.csv"
 TEST_FILE  = "../mnist_test.csv"
+
+MAX_EPOCH = 50
+hidden_layer_size = 100
+output_layer_size = 10
+momentum = 0.9
 
 # Import data
 train_data = pandas.read_csv(TRAIN_FILE,header=None)
@@ -30,3 +34,19 @@ test_data = numpy.divide(test_data, INPUT_MAX)
 
 input_size = len(train_data[0]) # how many inputs are there
 
+net = network.NeuralNet(input_size, hidden_layer_size, output_layer_size, momentum)
+
+# observe initial epoch 0 accuracy
+# then train and observe accuracy for 49 epochs
+for e in range(0,MAX_EPOCH):
+    net.evaluate(train_data,train_target,"train")
+    net.evaluate(test_data,test_target,"test")
+    net.train(train_data,train_target)
+
+# observe 50th epoch training
+# create confusion matrix using test data
+net.evaluate(train_data,train_target,"train")
+net.final_evaluate(test_data,test_target,"test")
+
+net.report_accuracy()
+net.report_confusion_matrix()
