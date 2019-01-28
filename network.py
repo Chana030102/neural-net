@@ -85,8 +85,10 @@ class NeuralNet:
         # increment epoch count
         self.epoch += 1
 
-    def report_accuracy(self):
-        
+    # output accuracy table to CSV file
+    def report_accuracy(self,name):
+        self.accuracy.to_csv(name+'_accuracy.csv')
 
-    def report_confusion_matrix(self):
-
+    # output confusion matrix to CSV file
+    def report_confusion_matrix(self,name):
+        self.c_matrix.to_csv(name+'cmatrix.csv')
