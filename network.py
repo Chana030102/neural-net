@@ -49,3 +49,22 @@ class NeuralNet:
                 self.accuracy[set_name + '_c'][self.epoch] += 1
             else:
                 self.accuracy[set_name + '_i'][self.epoch] += 1
+
+    def train(self, input_data, targets):
+         # loop for each row of data
+        for data_index in range(0,len(input_data)):
+            # loop for each node in hidden layer
+            for node_index in range(0,self.size_hidden_layer):
+                self.hid_buffer[node_index] = self.hidden_layer[node_index].evaluate(input_data[data_index])
+
+            # loop for each node in output layer
+            for node_index in range(0,self.size_output_layer):
+                self.out_buffer[node_index] = self.output_layer[node_index].evaluate(self.hid_buffer)
+
+            
+            # Evaluate outputs. Greatest value is prediction of network
+            # 
+            if (targets[data_index] == self.out_buffer.index(max(self.out_buffer))):
+                self.accuracy[set_name + '_c'][self.epoch] += 1
+            else:
+                self.accuracy[set_name + '_i'][self.epoch] += 1
