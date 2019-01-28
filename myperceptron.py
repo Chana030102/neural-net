@@ -23,6 +23,7 @@ class Perceptron:
 
         self.momentum = momentum
         self.learn_rate = learn_rate
+        self.error_term = 0
 
     # Evaluates inputs by summing the products of inputs and weights
     # Return -1 if size of inputs doesn't match initialized input size for Perceptron
@@ -34,9 +35,30 @@ class Perceptron:
         
         return numpy.sum(numpy.multiply(self.weights,inputs)) + self.bias_weight
     
-    # delta = ((learn_rate)*(error_terms)*(output)) + ((momentum)*(prev_delta))
-    def updateWeights(self,target,output,inputs,error_terms):
-        delta = self.learn_rate*(target-output)
-        delta_weights = numpy.multiply(delta,inputs)
+    # Weight update method for output layer nodes
+    def updateWeights(self,target,output,inputs):
+        # delta_weight = ((learn_rate)*(error_terms)*(input)) + ((momentum)*(prev_delta))
+        self.error_term = output*(1-output)*(target-output)
+        
+        delta = ((self.learn_rate)*(self.error_term)) 
+        delta_weights = numpy.multiply(delta,inputs) + (self.momentum*self.prev_delta)
+        
         self.weights = numpy.add(self.weights,delta_weights)
-        self.bias_weight += delta
+        self.bias_weight += delta + (self.momentum*self.prev_bias_delta)
+
+    # Weight update method for hidden layer nodes
+    # WES = Weight Error Sum = sum of the products of this node's weight 
+    #       to corresponding nodes of next layer
+    def updateWeightsHidden(self, WES, output, inputs):
+        self.error_term = output*(1-output)*WES
+        
+        # delta_weight = ((learn_rate)*(error_terms)*(input)) + ((momentum)*(prev_delta))
+        delta = ((self.learn_rate)*(self.error_term)) 
+        delta_weights = numpy.multiply(delta,inputs) + (self.momentum*self.prev_delta)
+        
+        self.weights = numpy.add(self.weights,delta_weights)
+        self.bias_weight += delta + (self.momentum*self.prev_bias_delta)
+
+    # Provide product of error term and a specific weight
+    def get_WE(self, weight_index):
+        return self.error_term*self.weights[weight_index]
