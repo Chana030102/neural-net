@@ -12,6 +12,8 @@ numpy.seterr(all='print')
 TRAIN_FILE = "../mnist_train.csv"
 TEST_FILE  = "../mnist_test.csv"
 TITLE      = "test"
+TITLE_TRAIN= 'train_data_'
+TITLE_TEST = 'test_data_'
 
 MAX_EPOCH = 2
 INPUT_MAX = 255
@@ -49,10 +51,10 @@ test_files = int(test_files)
 
 # break files up into batches, 1000 per file
 for i in range(0,train_files):
-    pickle.dump(train_data[(i*increment):(increment)*(i+1)], open('train_data_'+str(i),'wb'))
+    pickle.dump(train_data[(i*increment):(increment)*(i+1)], open(TITLE_TRAIN+str(i),'wb'))
 
 for i in range(0,test_files):
-    pickle.dump(train_data[(i*increment):(increment)*(i+1)], open('test_data_'+str(i),'wb'))
+    pickle.dump(train_data[(i*increment):(increment)*(i+1)], open(TITLE_TEST+str(i),'wb'))
 
 del train_data, test_data
 
@@ -62,14 +64,14 @@ net = network.NeuralNet(input_size, hidden_layer_size, output_layer_size, moment
 # observe initial epoch 0 accuracy
 # then train and observe accuracy for 49 epochs
 for e in range(0,MAX_EPOCH):
-    net.evaluate('train_data_',train_files,increment,train_target,"train")
-    net.evaluate('test_data_',test_files,increment,train_target,"test")
-    net.train('test_data_',test_files,increment,train_target)
+    net.evaluate(TITLE_TRAIN,train_files,increment,train_target,"train")
+    net.evaluate(TITLE_TEST,test_files,increment,train_target,"test")
+    net.train(TITLE_TRAIN,train_files,increment,train_target)
 
 # observe 50th epoch training
 # create confusion matrix using test data
-net.evaluate('train_data_',train_files,increment,train_target,"train")
-net.final_evaluate('test_data_',test_files,increment,train_target,"test")
+net.evaluate(TITLE_TRAIN,train_files,increment,train_target,"train")
+net.final_evaluate(TITLE_TEST,test_files,increment,train_target,"test")
 
 net.report_accuracy(TITLE)
 net.report_confusion_matrix(TITLE)

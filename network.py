@@ -82,8 +82,6 @@ class NeuralNet:
                 
                 self.c_matrix[targets[file_index + data_index]][self.out_buffer.index(max(self.out_buffer))] += 1
 
-            del input_data
-
     def train(self, file_name_base, num_files, increments, targets):
         # increment epoch count
         self.epoch += 1
@@ -93,7 +91,7 @@ class NeuralNet:
             input_data = pickle.load(open(file_name_base + str(file_index),'rb'))
 
             for data_index in range(0,increments): 
-                print(str(file_index + data_index))
+                print(str((file_index*increments) + data_index))
                 # set up expected target array for row of data
                 t = [None]*self.size_output_layer
                 for i in range(0,self.size_output_layer):
@@ -112,18 +110,14 @@ class NeuralNet:
                     self.out_buffer[out_index] = self.output_layer[out_index].evaluate(self.hid_buffer)
                     self.output_layer[out_index].updateWeights(t[out_index],self.out_buffer[out_index],self.hid_buffer)
 
+                    # get sum of product of weights and error term for each node
+                    temp = numpy.multiply(self.output_layer[out_index].weights, self.output_layer[out_index].error_term)
+                    WES = numpy.add(WES, temp)
+
                 # update weights for hidden layer nodes
-                for hidden_index in range(0,self.size_hidden_layer):
-                    WES = 0
-                    
-                    # calculate sum of products of weight and output node error term
-                    for out_index in range(0,self.size_output_layer):
-                        WES += self.output_layer[out_index].get_WE(hidden_index)
-                    
+                for hidden_index in range(0,self.size_hidden_layer):                    
                     self.hidden_layer[hidden_index].updateWeightsHidden(WES,self.hid_buffer[hidden_index],input_data)
-            
-            del input_data
-            
+                        
     # output accuracy table to CSV file
     def report_accuracy(self,name):
         file_name = name + '_accuracy.csv'
