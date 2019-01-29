@@ -35,6 +35,8 @@ class NeuralNet:
     # run network through provided data
     # set name will be "train" or "test" for data set identification
     def evaluate(self, input_data, targets, set_name):
+        print('Evaluating ' + set_name + ' data')
+
         # loop for each row of data
         for data_index in range(0,len(input_data)):
             # loop for each node in hidden layer
@@ -54,6 +56,7 @@ class NeuralNet:
     # run network through provided data and add to confusion matrix
     # set name will be "train" or "test" for data set identification
     def final_evaluate(self, input_data, targets, set_name):
+
         # loop for each row of data
         for data_index in range(0,len(input_data)):
             # loop for each node in hidden layer
@@ -73,8 +76,11 @@ class NeuralNet:
             self.c_matrix[targets[data_index]][self.out_buffer.index(max(self.out_buffer))] += 1
 
     def train(self, input_data, targets):
+        # increment epoch count
+        self.epoch += 1
+
         # start training epoch
-        print('Epoch ' + self.epoch + '\n')
+        print('Epoch ' + str(self.epoch) + '\n')
 
         # loop through each row of data
         for data_index in range(0,len(input_data)):
@@ -106,9 +112,6 @@ class NeuralNet:
                 
                 self.hidden_layer[hidden_index].updateWeightsHidden(WES,self.hid_buffer[hidden_index],input_data)
         
-        # increment epoch count
-        self.epoch += 1
-
     # output accuracy table to CSV file
     def report_accuracy(self,name):
         file_name = name + '_accuracy.csv'

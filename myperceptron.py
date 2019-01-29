@@ -65,7 +65,7 @@ class Perceptron:
         # delta_weight = ((learn_rate)*(error_terms)*(input)) + ((momentum)*(prev_delta))
         delta = ((self.learn_rate)*(self.error_term)) 
         a = numpy.multiply(delta,inputs)
-        b = numpy.multiply(self.momentum,self.prev_delta
+        b = numpy.multiply(self.momentum,self.prev_delta)
         delta_weights = numpy.add(a,b)
         del a
         del b
