@@ -104,6 +104,7 @@ class NeuralNet:
                 for hidden_index in range(0,self.size_hidden_layer):
                     self.hid_buffer[hidden_index] = self.hidden_layer[hidden_index].evaluate(input_data[data_index])
 
+                WES = 0
                 # compute activation for nodes in output layer
                 # then update weights for output layer nodes
                 for out_index in range(0,self.size_output_layer):
