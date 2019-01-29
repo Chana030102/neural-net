@@ -25,7 +25,7 @@ class NeuralNet:
         self.out_buffer = [None]*num_outputs
 
         # table to keep track of accuracy for evalutations
-        self.accuracy = pandas.DataFrame(0,index=range(0,50),columns=['test_c','test_i','train_c','train_i'])
+        self.accuracy = pandas.DataFrame(0,index=range(0,51),columns=['test_c','test_i','train_c','train_i'])
         self.epoch = 0 # count number of times trained
 
         # confusion matrix for evaluation 
