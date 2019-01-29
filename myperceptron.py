@@ -18,12 +18,12 @@ class Perceptron:
         self.weights = numpy.random.uniform(low=WEIGHT_LOW,high=WEIGHT_HIGH,size=(num_inputs,))
         self.bias_weight = numpy.random.uniform(low=WEIGHT_LOW,high=WEIGHT_HIGH)
         
-        self.prev_delta = [0] * num_inputs
-        self.prev_bias_delta = 0
+        self.prev_delta = [0.0] * num_inputs
+        self.prev_bias_delta = 0.0
 
         self.momentum = momentum
         self.learn_rate = learn_rate
-        self.error_term = 0
+        self.error_term = 0.0
 
     # Evaluates inputs by summing the products of inputs and weights
     # Return -1 if size of inputs doesn't match initialized input size for Perceptron
@@ -41,7 +41,9 @@ class Perceptron:
         self.error_term = output*(1-output)*(target-output)
         
         delta = ((self.learn_rate)*(self.error_term)) 
-        delta_weights = numpy.multiply(delta,inputs) + (self.momentum*self.prev_delta)
+        a = numpy.multiply(delta,inputs)
+        b = numpy.multiply(self.momentum,self.prev_delta
+        delta_weights = numpy.add(a,b)
         
         self.weights = numpy.add(self.weights,delta_weights)
         self.bias_weight += delta + (self.momentum*self.prev_bias_delta)
@@ -54,7 +56,9 @@ class Perceptron:
         
         # delta_weight = ((learn_rate)*(error_terms)*(input)) + ((momentum)*(prev_delta))
         delta = ((self.learn_rate)*(self.error_term)) 
-        delta_weights = numpy.multiply(delta,inputs) + (self.momentum*self.prev_delta)
+        a = numpy.multiply(delta,inputs)
+        b = numpy.multiply(self.momentum,self.prev_delta
+        delta_weights = numpy.add(a,b)
         
         self.weights = numpy.add(self.weights,delta_weights)
         self.bias_weight += delta + (self.momentum*self.prev_bias_delta)

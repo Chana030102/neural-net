@@ -10,13 +10,14 @@ import network
 
 TRAIN_FILE = "../mnist_train.csv"
 TEST_FILE  = "../mnist_test.csv"
-TITLE      = "E1_100"
+TITLE      = "test"
 
-MAX_EPOCH = 50
+MAX_EPOCH = 2
 INPUT_MAX = 255
 hidden_layer_size = 100
 output_layer_size = 10
 momentum = 0.9
+learning_rate = 0.1
 
 # Import data
 train_data = pandas.read_csv(TRAIN_FILE,header=None)
@@ -36,7 +37,7 @@ test_data = numpy.divide(test_data, INPUT_MAX)
 
 input_size = len(train_data[0]) # how many inputs are there
 
-net = network.NeuralNet(input_size, hidden_layer_size, output_layer_size, momentum)
+net = network.NeuralNet(input_size, hidden_layer_size, output_layer_size, momentum, learning_rate)
 
 # observe initial epoch 0 accuracy
 # then train and observe accuracy for 49 epochs

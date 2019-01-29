@@ -26,7 +26,7 @@ class NeuralNet:
         self.out_buffer = [None]*num_outputs
 
         # table to keep track of accuracy for evalutations
-        self.accuracy = pandas.DataFrame(columns=['test_c','test_i','train_c','train_i'])
+        self.accuracy = pandas.DataFrame(0,index=range(0,50),columns=['test_c','test_i','train_c','train_i'])
         self.epoch = 0 # count number of times trained
 
         # confusion matrix for evaluation 
@@ -91,7 +91,7 @@ class NeuralNet:
             # then update weights for output layer nodes
             for out_index in range(0,self.size_output_layer):
                 self.out_buffer[out_index] = self.output_layer[out_index].evaluate(self.hid_buffer)
-                self.output_layer[out_index].updateWeights(t[out_index],self.out_buffer[out_index],input_data[data_index])
+                self.output_layer[out_index].updateWeights(t[out_index],self.out_buffer[out_index],self.hid_buffer)
 
             # update weights for hidden layer nodes
             for hidden_index in range(0,self.size_hidden_layer):
@@ -108,8 +108,12 @@ class NeuralNet:
 
     # output accuracy table to CSV file
     def report_accuracy(self,name):
-        self.accuracy.to_csv(name+'_accuracy.csv')
+        file_name = name + '_accuracy.csv'
+        self.accuracy.to_csv(file_name)
+        print(file_name + "has been created\n")
 
     # output confusion matrix to CSV file
     def report_confusion_matrix(self,name):
-        self.c_matrix.to_csv(name+'cmatrix.csv')
+        file_name = name + '_cmatrix.csv'
+        self.c_matrix.to_csv(file_name)
+        print(file_name + "has been created\n")
