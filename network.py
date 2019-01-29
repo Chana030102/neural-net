@@ -73,7 +73,10 @@ class NeuralNet:
             self.c_matrix[targets[data_index]][self.out_buffer.index(max(self.out_buffer))] += 1
 
     def train(self, input_data, targets):
-         # loop through each row of data
+        # start training epoch
+        print('Epoch ' + self.epoch + '\n')
+
+        # loop through each row of data
         for data_index in range(0,len(input_data)):
             # set up expected target array for row of data
             t = [None]*self.size_output_layer

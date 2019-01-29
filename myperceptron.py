@@ -42,11 +42,15 @@ class Perceptron:
         
         delta = ((self.learn_rate)*(self.error_term)) 
         a = numpy.multiply(delta,inputs)
-        b = numpy.multiply(self.momentum,self.prev_delta
+        b = numpy.multiply(self.momentum,self.prev_delta)
         delta_weights = numpy.add(a,b)
+        bias_delta = delta + (self.momentum*self.prev_bias_delta)
         
         self.weights = numpy.add(self.weights,delta_weights)
-        self.bias_weight += delta + (self.momentum*self.prev_bias_delta)
+        self.bias_weight += bias_delta
+
+        self.prev_delta = delta_weights
+        self.prev_bias_delta = bias_delta
 
     # Weight update method for hidden layer nodes
     # WES = Weight Error Sum = sum of the products of this node's weight 
