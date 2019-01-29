@@ -10,8 +10,10 @@ import network
 
 TRAIN_FILE = "../mnist_train.csv"
 TEST_FILE  = "../mnist_test.csv"
+TITLE      = "E1_100"
 
 MAX_EPOCH = 50
+INPUT_MAX = 255
 hidden_layer_size = 100
 output_layer_size = 10
 momentum = 0.9
@@ -48,5 +50,5 @@ for e in range(0,MAX_EPOCH):
 net.evaluate(train_data,train_target,"train")
 net.final_evaluate(test_data,test_target,"test")
 
-net.report_accuracy()
-net.report_confusion_matrix()
+net.report_accuracy(TITLE)
+net.report_confusion_matrix(TITLE)
