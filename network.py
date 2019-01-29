@@ -6,9 +6,8 @@
 #
 #
 
-import numpy
+import pandas, pickle, numpy
 import myperceptron
-import pandas
 
 class NeuralNet:
 
@@ -34,84 +33,96 @@ class NeuralNet:
 
     # run network through provided data
     # set name will be "train" or "test" for data set identification
-    def evaluate(self, input_data, targets, set_name):
-        print('Evaluating ' + set_name + ' data')
+    def evaluate(self, file_name_base, num_files, increments, targets, set_name):
 
         # loop for each row of data
-        for data_index in range(0,len(input_data)):
-            # loop for each node in hidden layer
-            for node_index in range(0,self.size_hidden_layer):
-                self.hid_buffer[node_index] = self.hidden_layer[node_index].evaluate(input_data[data_index])
+        for file_index in range(0,num_files):
+            print('Evaluating ' + file_name_base + str(file_index))
+            input_data = pickle.load(open(file_name_bases + str(file_index),'rb'))
 
-            # loop for each node in output layer
-            for node_index in range(0,self.size_output_layer):
-                self.out_buffer[node_index] = self.output_layer[node_index].evaluate(self.hid_buffer)
+            for data_index in range(0,increments):    
+                # loop for each node in hidden layer
+                for node_index in range(0,self.size_hidden_layer):
+                    self.hid_buffer[node_index] = self.hidden_layer[node_index].evaluate(input_data[data_index])
 
-            # update accuracy table
-            if (targets[data_index] == self.out_buffer.index(max(self.out_buffer))):
-                self.accuracy[set_name + '_c'][self.epoch] += 1
-            else:
-                self.accuracy[set_name + '_i'][self.epoch] += 1
+                # loop for each node in output layer
+                for node_index in range(0,self.size_output_layer):
+                    self.out_buffer[node_index] = self.output_layer[node_index].evaluate(self.hid_buffer)
+
+                # update accuracy table
+                if (targets[file_index + data_index] == self.out_buffer.index(max(self.out_buffer))):
+                    self.accuracy[set_name + '_c'][self.epoch] += 1
+                else:
+                    self.accuracy[set_name + '_i'][self.epoch] += 1
+            
+            del input_data
         
     # run network through provided data and add to confusion matrix
     # set name will be "train" or "test" for data set identification
-    def final_evaluate(self, input_data, targets, set_name):
+    def final_evaluate(self, file_name_base, num_files, increments, targets, set_name):
+        
+        for file_index in range(0,num_files):
+            print('Evaluating ' + file_name_base + str(file_index))
+            input_data = pickle.load(open(file_name_bases + str(file_index),'rb'))
 
-        # loop for each row of data
-        for data_index in range(0,len(input_data)):
-            # loop for each node in hidden layer
-            for node_index in range(0,self.size_hidden_layer):
-                self.hid_buffer[node_index] = self.hidden_layer[node_index].evaluate(input_data[data_index])
+            for data_index in range(0,increments):  
+                # loop for each node in hidden layer
+                for node_index in range(0,self.size_hidden_layer):
+                    self.hid_buffer[node_index] = self.hidden_layer[node_index].evaluate(input_data[data_index])
 
-            # loop for each node in output layer
-            for node_index in range(0,self.size_output_layer):
-                self.out_buffer[node_index] = self.output_layer[node_index].evaluate(self.hid_buffer)
+                # loop for each node in output layer
+                for node_index in range(0,self.size_output_layer):
+                    self.out_buffer[node_index] = self.output_layer[node_index].evaluate(self.hid_buffer)
 
-            # update accuracy table
-            if (targets[data_index] == self.out_buffer.index(max(self.out_buffer))):
-                self.accuracy[set_name + '_c'][self.epoch] += 1
-            else:
-                self.accuracy[set_name + '_i'][self.epoch] += 1
-            
-            self.c_matrix[targets[data_index]][self.out_buffer.index(max(self.out_buffer))] += 1
+                # update accuracy table
+                if (targets[file_index + data_index] == self.out_buffer.index(max(self.out_buffer))):
+                    self.accuracy[set_name + '_c'][self.epoch] += 1
+                else:
+                    self.accuracy[set_name + '_i'][self.epoch] += 1
+                
+                self.c_matrix[targets[file_index + data_index]][self.out_buffer.index(max(self.out_buffer))] += 1
 
-    def train(self, input_data, targets):
+            del input_data
+
+    def train(self, file_name_base, num_files, increments, targets):
         # increment epoch count
         self.epoch += 1
 
-        # start training epoch
-        print('Epoch ' + str(self.epoch) + '\n')
+        for file_index in range(0,num_files):
+            print('Epoch '+ str(self.epoch) + ': ' + file_name_base + str(file_index))
+            input_data = pickle.load(open(file_name_base + str(file_index),'rb'))
 
-        # loop through each row of data
-        for data_index in range(0,len(input_data)):
-            # set up expected target array for row of data
-            t = [None]*self.size_output_layer
-            for i in range(0,self.size_output_layer):
-                if(i == targets[data_index]):
-                    t[i] = 0.9
-                else:
-                    t[i] = 0.1
+            for data_index in range(0,increments): 
+                # set up expected target array for row of data
+                t = [None]*self.size_output_layer
+                for i in range(0,self.size_output_layer):
+                    if(i == targets[file_index + data_index]):
+                        t[i] = 0.9
+                    else:
+                        t[i] = 0.1
 
-            # Compute activation for nodes in hiden layer
-            for hidden_index in range(0,self.size_hidden_layer):
-                self.hid_buffer[hidden_index] = self.hidden_layer[hidden_index].evaluate(input_data[data_index])
+                # Compute activation for nodes in hiden layer
+                for hidden_index in range(0,self.size_hidden_layer):
+                    self.hid_buffer[hidden_index] = self.hidden_layer[hidden_index].evaluate(input_data[data_index])
 
-            # compute activation for nodes in output layer
-            # then update weights for output layer nodes
-            for out_index in range(0,self.size_output_layer):
-                self.out_buffer[out_index] = self.output_layer[out_index].evaluate(self.hid_buffer)
-                self.output_layer[out_index].updateWeights(t[out_index],self.out_buffer[out_index],self.hid_buffer)
-
-            # update weights for hidden layer nodes
-            for hidden_index in range(0,self.size_hidden_layer):
-                WES = 0
-                
-                # calculate sum of products of weight and output node error term
+                # compute activation for nodes in output layer
+                # then update weights for output layer nodes
                 for out_index in range(0,self.size_output_layer):
-                    WES += self.output_layer[out_index].get_WE(hidden_index)
-                
-                self.hidden_layer[hidden_index].updateWeightsHidden(WES,self.hid_buffer[hidden_index],input_data)
-        
+                    self.out_buffer[out_index] = self.output_layer[out_index].evaluate(self.hid_buffer)
+                    self.output_layer[out_index].updateWeights(t[out_index],self.out_buffer[out_index],self.hid_buffer)
+
+                # update weights for hidden layer nodes
+                for hidden_index in range(0,self.size_hidden_layer):
+                    WES = 0
+                    
+                    # calculate sum of products of weight and output node error term
+                    for out_index in range(0,self.size_output_layer):
+                        WES += self.output_layer[out_index].get_WE(hidden_index)
+                    
+                    self.hidden_layer[hidden_index].updateWeightsHidden(WES,self.hid_buffer[hidden_index],input_data)
+            
+            del input_data
+            
     # output accuracy table to CSV file
     def report_accuracy(self,name):
         file_name = name + '_accuracy.csv'
