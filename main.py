@@ -7,6 +7,8 @@
 import numpy, pandas, pickle
 import network
 
+numpy.seterr(all='print')
+
 TRAIN_FILE = "../mnist_train.csv"
 TEST_FILE  = "../mnist_test.csv"
 TITLE      = "test"
@@ -39,6 +41,11 @@ test_data = numpy.divide(test_data, INPUT_MAX)
 input_size = len(train_data[0]) # how many inputs are there
 train_files = len(train_data)/increment
 test_files = len(test_data)/increment
+
+print(str(train_files))
+print(str(test_files))
+train_files = int(train_files)
+test_files = int(test_files)
 
 # break files up into batches, 1000 per file
 for i in range(0,train_files):

@@ -38,7 +38,7 @@ class NeuralNet:
         # loop for each row of data
         for file_index in range(0,num_files):
             print('Evaluating ' + file_name_base + str(file_index))
-            input_data = pickle.load(open(file_name_bases + str(file_index),'rb'))
+            input_data = pickle.load(open(file_name_base + str(file_index),'rb'))
 
             for data_index in range(0,increments):    
                 # loop for each node in hidden layer
@@ -63,7 +63,7 @@ class NeuralNet:
         
         for file_index in range(0,num_files):
             print('Evaluating ' + file_name_base + str(file_index))
-            input_data = pickle.load(open(file_name_bases + str(file_index),'rb'))
+            input_data = pickle.load(open(file_name_base + str(file_index),'rb'))
 
             for data_index in range(0,increments):  
                 # loop for each node in hidden layer
@@ -93,6 +93,7 @@ class NeuralNet:
             input_data = pickle.load(open(file_name_base + str(file_index),'rb'))
 
             for data_index in range(0,increments): 
+                print(str(file_index + data_index))
                 # set up expected target array for row of data
                 t = [None]*self.size_output_layer
                 for i in range(0,self.size_output_layer):
