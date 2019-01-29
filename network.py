@@ -50,7 +50,7 @@ class NeuralNet:
                     self.out_buffer[node_index] = self.output_layer[node_index].evaluate(self.hid_buffer)
 
                 # update accuracy table
-                if (targets[file_index + data_index] == self.out_buffer.index(max(self.out_buffer))):
+                if (targets[(file_index*increments) + data_index] == self.out_buffer.index(max(self.out_buffer))):
                     self.accuracy[set_name + '_c'][self.epoch] += 1
                 else:
                     self.accuracy[set_name + '_i'][self.epoch] += 1
@@ -75,7 +75,7 @@ class NeuralNet:
                     self.out_buffer[node_index] = self.output_layer[node_index].evaluate(self.hid_buffer)
 
                 # update accuracy table
-                if (targets[file_index + data_index] == self.out_buffer.index(max(self.out_buffer))):
+                if (targets[(file_index*increments) + data_index] == self.out_buffer.index(max(self.out_buffer))):
                     self.accuracy[set_name + '_c'][self.epoch] += 1
                 else:
                     self.accuracy[set_name + '_i'][self.epoch] += 1
@@ -95,7 +95,7 @@ class NeuralNet:
                 # set up expected target array for row of data
                 t = [None]*self.size_output_layer
                 for i in range(0,self.size_output_layer):
-                    if(i == targets[file_index + data_index]):
+                    if(i == targets[(file_index*increments) + data_index]):
                         t[i] = 0.9
                     else:
                         t[i] = 0.1
