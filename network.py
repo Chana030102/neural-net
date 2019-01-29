@@ -117,7 +117,7 @@ class NeuralNet:
 
                 # update weights for hidden layer nodes
                 for hidden_index in range(0,self.size_hidden_layer):                    
-                    self.hidden_layer[hidden_index].updateWeightsHidden(WES,self.hid_buffer[hidden_index],input_data)
+                    self.hidden_layer[hidden_index].updateWeightsHidden(WES[hidden_index],self.hid_buffer[hidden_index],input_data[data_index])
                         
     # output accuracy table to CSV file
     def report_accuracy(self,name):

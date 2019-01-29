@@ -11,11 +11,11 @@ numpy.seterr(all='print')
 
 TRAIN_FILE = "../mnist_train.csv"
 TEST_FILE  = "../mnist_test.csv"
-TITLE      = "test"
+TITLE      = "e1_100"
 TITLE_TRAIN= 'train_data_'
 TITLE_TEST = 'test_data_'
 
-MAX_EPOCH = 2
+MAX_EPOCH = 50 
 INPUT_MAX = 255
 increment = 1000
 
