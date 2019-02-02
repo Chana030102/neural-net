@@ -83,7 +83,14 @@ class NeuralNet:
         self.weight_input_to_hidden = numpy.add(self.weight_input_to_hidden,self.weight_input_to_hidden_prevdelta)
 
     # Calculate activation for inputs and record accuracy
-    def evaluate(self, input_data, targets):
+    def evaluate(self, set_name, input_data, targets):
+        for data_index in (numpy.shape(input_data)[0]):
+            activation = self.activation(input_data[data_index])
+
+            if(activation.index(max(activation)) == targets[data_index]):
+                self.accuracy[set_name+'_c'][self.epoch] += 1
+            else:
+                self.accuracy[set_name+'_i'][self.epoch] += 1
 
     # Train network
     def train(self, input_data):
