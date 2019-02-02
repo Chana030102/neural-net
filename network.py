@@ -83,18 +83,31 @@ class NeuralNet:
         self.weight_input_to_hidden = numpy.add(self.weight_input_to_hidden,self.weight_input_to_hidden_prevdelta)
 
     # Calculate activation for inputs and record accuracy
-    def evaluate(self, set_name, input_data, targets):
+    def evaluate(self, set_name, input_data, targets, cmatrix=False):
+        # loop through each row of data
         for data_index in (numpy.shape(input_data)[0]):
             activation = self.activation(input_data[data_index])
+            prediction = activation.index(max(activation)
 
-            if(activation.index(max(activation)) == targets[data_index]):
+            # Update accuracy table
+            if(prediction) == targets[data_index]):
                 self.accuracy[set_name+'_c'][self.epoch] += 1
             else:
                 self.accuracy[set_name+'_i'][self.epoch] += 1
 
+            # Update confusion matrix if requested
+            if(cmatrix == True):
+                self.c_matrix[targets[data_index]][prediction] += 1
+
     # Train network
-    def train(self, input_data):
-    
+    # targets will be an array of digits for MNIST and needs to be converted to matrix of 0.1s and 0.9s
+    def train(self, input_data, targets):
+
+        # loop through each row of data
+        for data_index in (numpy.shape(input_data)[0]):
+            out, hidden = self.activation(input_data[data_index],return_hidden=True)
+            self.updateWeights(input_data,hidden,out,targets)
+
     # Output accuracy table to CSV file
     def report_accuracy(self, file_name):
 
