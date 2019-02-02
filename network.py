@@ -8,8 +8,13 @@
 
 import math, numpy, pandas
 
-WEIGHT_LOW = -0.05
-WEIGHT_HIGH = 0.05
+# Weight initialization range
+WEIGHT_LOW    = -0.05
+WEIGHT_HIGH   = 0.05
+
+# expected values of output nodes for activation
+EXPECTED_LOW  = 0.1
+EXPECTED_HIGH = 0.9
 
 sigmoid = lambda x : 1/(1+math.exp(-x))
 
@@ -87,10 +92,10 @@ class NeuralNet:
         # loop through each row of data
         for data_index in (numpy.shape(input_data)[0]):
             activation = self.activation(input_data[data_index])
-            prediction = activation.index(max(activation)
+            prediction = activation.index(max(activation))
 
             # Update accuracy table
-            if(prediction) == targets[data_index]):
+            if(prediction == targets[data_index]):
                 self.accuracy[set_name+'_c'][self.epoch] += 1
             else:
                 self.accuracy[set_name+'_i'][self.epoch] += 1
@@ -105,11 +110,20 @@ class NeuralNet:
 
         # loop through each row of data
         for data_index in (numpy.shape(input_data)[0]):
+            t = [EXPECTED_LOW]*self.size_output
+            t[targets[data_index]] = EXPECTED_HIGH
+
             out, hidden = self.activation(input_data[data_index],return_hidden=True)
-            self.updateWeights(input_data,hidden,out,targets)
+            self.updateWeights(input_data,hidden,out,t)
 
-    # Output accuracy table to CSV file
-    def report_accuracy(self, file_name):
+    # output accuracy table to CSV file
+    def report_accuracy(self,name):
+        file_name = name + '_accuracy.csv'
+        self.accuracy.to_csv(file_name)
+        print(file_name + "has been created\n")
 
-    # Output confusion matrix
-    def report_matrix(self, file_name):
+    # output confusion matrix to CSV file
+    def report_confusion_matrix(self,name):
+        file_name = name + '_cmatrix.csv'
+        self.c_matrix.to_csv(file_name)
+        print(file_name + "has been created\n")
