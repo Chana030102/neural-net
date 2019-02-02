@@ -62,13 +62,13 @@ class NeuralNet:
 
         # calculate hidden error terms
         hidden_a = numpy.subtract(1,hidden_activations)
-        hidden_b = numpy.dot(self.weight_hidden_to_out.transpose(),error_out)
+        hidden_b = numpy.dot(numpy.transpose(self.weight_hidden_to_out),error_out)
         error_hidden = numpy.multiply(hidden_a,hidden_b)
         error_hidden = numpy.multiply(error_hidden,hidden_activations)
 
         # calculate hidden-to-out weight deltas
         out_a = numpy.multiply(error_out,self.learn_rate)
-        out_a = numpy.multiply(out_a,hidden_activations))
+        out_a = numpy.multiply(out_a,hidden_activations)
         out_b = numpy.multiply(self.momentum,self.weight_hidden_to_out_prevdelta)
         self.weight_hidden_to_out_prevdelta = numpy.add(out_a,out_b)
 
@@ -83,7 +83,7 @@ class NeuralNet:
         self.weight_input_to_hidden = numpy.add(self.weight_input_to_hidden,self.weight_input_to_hidden_prevdelta)
 
     # Calculate activation for inputs and record accuracy
-    def evaluate(self, input_data):
+    def evaluate(self, input_data, targets):
 
     # Train network
     def train(self, input_data):
