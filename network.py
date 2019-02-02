@@ -41,11 +41,11 @@ class NeuralNet:
 
     # Forward propagation activation for network
     def activation(self, input_data, return_hidden=False):
-        i_to_h_dot = numpy.dot(self.weight_input_to_hidden,[1]+input_data.transpose())
-        hidden_activations = numpy.asarray(list(map(sigmoid,i_to_h_dot)))
+        i_to_h_dot = numpy.dot(self.weight_input_to_hidden.transpose(),[1]+input_data)
+        hidden_activations = list(map(sigmoid,i_to_h_dot))
 
-        h_to_o_dot = numpy.dot(self.weight_hidden_to_out,[1]+hidden_activations)
-        out_activations = numpy.asarray(list(map(sigmoid,h_to_o_dot)))
+        h_to_o_dot = numpy.dot(self.weight_hidden_to_out.transpose(),[1]+hidden_activations)
+        out_activations = list(map(sigmoid,h_to_o_dot))
 
         if(return_hidden == False):
             return [hidden_activations,out_activations]
@@ -54,6 +54,18 @@ class NeuralNet:
 
     # Back propagation to update weights in network
     def updateWeights(self, input_data, hidden_activations, out_activations, target):
+        # Calculate output error terms 
+        out_a = numpy.subtract(target,out_activations)
+        out_b = numpy.subtract(1,out_activations)
+        error_out = numpy.multiply(out_a,out_b)
+        error_out = numpy.multiply(error_out,out_activations)
+
+        # calculate hidden error terms
+        hidden_a = numpy.subtract(1,hidden_activations)
+        hidden_b = numpy.dot(self.weight_hidden_to_out.transpose(),error_out)
+        error_hidden = numpy.multiply(hidden_a,hidden_b)
+        error_hidden = numpy.multiarray(error_hidden,hidden_activations)
+
         
 
     # Calculate activation for inputs and record accuracy
