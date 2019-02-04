@@ -112,7 +112,7 @@ class NeuralNet:
     def train(self, input_data, targets):
 
         # loop through each row of data
-        for data_index in (numpy.shape(input_data)[0]):
+        for data_index in range(numpy.shape(input_data)[0]):
             t = [EXPECTED_LOW]*self.size_output
             t[targets[data_index]] = EXPECTED_HIGH
 
