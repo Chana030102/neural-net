@@ -22,8 +22,8 @@ class NeuralNet:
 
     # Input number should not include bias
     def __init__(self, num_inputs, num_hidden_nodes, num_outputs, momentum, learn_rate):
-        self.size_inputs = num_inputs + 1
-        self.size_hidden = num_hidden_nodes + 1
+        self.size_inputs = num_inputs
+        self.size_hidden = num_hidden_nodes
         self.size_output = num_outputs
 
         self.momentum = momentum
@@ -33,13 +33,13 @@ class NeuralNet:
         # weights will be organized as a matrix. The first row is always bias node
         # row index = inputs
         # column index = hidden node
-        self.weight_input_to_hidden = numpy.random.uniform(low=WEIGHT_LOW,high=WEIGHT_HIGH,size=(self.size_inputs,self.size_hidden))
-        self.weight_input_to_hidden_prevdelta = numpy.zeros((self.size_inputs,self.size_hidden))
+        self.weight_input_to_hidden = numpy.random.uniform(low=WEIGHT_LOW,high=WEIGHT_HIGH,size=(self.size_inputs+1,self.size_hidden))
+        self.weight_input_to_hidden_prevdelta = numpy.zeros((self.size_inputs+1,self.size_hidden))
 
         # - row index = hidden node (weights for all output nodes)
         # - column index = output node (weights for all inputs for each output node)
-        self.weight_hidden_to_out = numpy.random.uniform(low=WEIGHT_LOW,high=WEIGHT_HIGH,size=(self.size_hidden,self.size_output))
-        self.weight_hidden_to_out_prevdelta = numpy.zeros((self.size_hidden,self.size_output))
+        self.weight_hidden_to_out = numpy.random.uniform(low=WEIGHT_LOW,high=WEIGHT_HIGH,size=(self.size_hidden+1,self.size_output))
+        self.weight_hidden_to_out_prevdelta = numpy.zeros((self.size_hidden+1,self.size_output))
 
         self.accuracy = pandas.DataFrame(0,index=range(0,51),columns=['test_c','test_i','train_c','train_i'])
         self.c_matrix = pandas.DataFrame(0,index=range(0,self.size_output),columns=range(0,self.size_output))
@@ -52,7 +52,7 @@ class NeuralNet:
         h_to_o_dot = numpy.dot(self.weight_hidden_to_out.transpose(),[1]+hidden_activations)
         out_activations = list(map(sigmoid,h_to_o_dot))
 
-        if(return_hidden == False):
+        if(return_hidden == True):
             return [hidden_activations,out_activations]
         else:
             return out_activations
@@ -67,30 +67,33 @@ class NeuralNet:
 
         # calculate hidden error terms
         hidden_a = numpy.subtract(1,hidden_activations)
-        hidden_b = numpy.dot(numpy.transpose(self.weight_hidden_to_out),error_out)
+        # indexing [1:] to ignore bias weight because bias does not need error term
+        hidden_b = numpy.dot(self.weight_hidden_to_out[1:],error_out)
         error_hidden = numpy.multiply(hidden_a,hidden_b)
         error_hidden = numpy.multiply(error_hidden,hidden_activations)
 
         # calculate hidden-to-out weight deltas
         out_a = numpy.multiply(error_out,self.learn_rate)
-        out_a = numpy.multiply(out_a,hidden_activations)
+        out_a = numpy.multiply(out_a,[1]+hidden_activations)
         out_b = numpy.multiply(self.momentum,self.weight_hidden_to_out_prevdelta)
-        self.weight_hidden_to_out_prevdelta = numpy.add(out_a,out_b)
+        ho_delta = numpy.add(numpy.asmatrix(out_a).transpose(),out_b)
 
         # calculate input-to-hidden weight deltas
         hidden_a = numpy.multiply(error_hidden,self.learn_rate)
-        hidden_a = numpy.multiply(hidden_a,input_data)
+        hidden_a = numpy.multiply(numpy.asmatrix(hidden_a).transpose(),[1]+input_data)
         hidden_b = numpy.multiply(self.momentum,self.weight_input_to_hidden_prevdelta)
-        self.weight_input_to_hidden_prevdelta = numpy.add(hidden_a,hidden_b)
+        ih_delta = numpy.add(numpy.transpose(hidden_a),hidden_b)
 
-        # apply weight deltas to current weights
-        self.weight_hidden_to_out = numpy.add(self.weight_hidden_to_out,self.weight_hidden_to_out_prevdelta)
-        self.weight_input_to_hidden = numpy.add(self.weight_input_to_hidden,self.weight_input_to_hidden_prevdelta)
+        # apply weight deltas to current weights and save new deltas as previous
+        self.weight_hidden_to_out = numpy.add(self.weight_hidden_to_out,ho_delta)
+        self.weight_input_to_hidden = numpy.add(self.weight_input_to_hidden,ih_delta)
+        self.weight_hidden_to_out_prevdelta = ho_delta
+        self.weight_input_to_hidden_prevdelta = ih_delta
 
     # Calculate activation for inputs and record accuracy
     def evaluate(self, set_name, input_data, targets, cmatrix=False):
         # loop through each row of data
-        for data_index in (numpy.shape(input_data)[0]):
+        for data_index in range(numpy.shape(input_data)[0]):
             activation = self.activation(input_data[data_index])
             prediction = activation.index(max(activation))
 
@@ -115,6 +118,8 @@ class NeuralNet:
 
             out, hidden = self.activation(input_data[data_index],return_hidden=True)
             self.updateWeights(input_data,hidden,out,t)
+        
+        self.epoch += 1
 
     # output accuracy table to CSV file
     def report_accuracy(self,name):
