@@ -32,12 +32,12 @@ test_data  = pandas.read_csv(TEST_FILE ,header=None)
 # Preprocess data 
 train_data.sample(frac=1)      # shuffle training data
 train_target = train_data[0].values # Save targets as a separate dataframe/array
-train_data.drop(columns=0)     # Remove column with target info
+train_data = train_data.drop(columns=0)     # Remove column with target info
 train_data = train_data.values # convert to numpy array
 train_data = numpy.divide(train_data, INPUT_MAX) # scale inputs between 0 and 1 by dividing by input max value
 
 test_target = test_data[0].values # Save targets as a separate dataframe/array
-test_data.drop(columns=0)    # Remove column with target info
+test_data = test_data.drop(columns=0)    # Remove column with target info
 test_data = test_data.values # convert to numpy array
 test_data = numpy.divide(test_data, INPUT_MAX)  
 
