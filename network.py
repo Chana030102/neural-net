@@ -53,7 +53,7 @@ class NeuralNet:
         out_activations = list(map(sigmoid,h_to_o_dot))
 
         if(return_hidden == True):
-            return [hidden_activations,out_activations]
+            return [out_activations,hidden_activations]
         else:
             return out_activations
 
