@@ -16,7 +16,7 @@ TITLE      = "e1_100"
 TITLE_TRAIN= 'train'
 TITLE_TEST = 'test'
 
-MAX_EPOCH = 50 
+MAX_EPOCH = 2 
 INPUT_MAX = 255
 increment = 1000
 
