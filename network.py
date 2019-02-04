@@ -46,10 +46,10 @@ class NeuralNet:
 
     # Forward propagation activation for network
     def activation(self, input_data, return_hidden=False):
-        i_to_h_dot = numpy.dot(self.weight_input_to_hidden.transpose(),[1]+input_data)
+        i_to_h_dot = numpy.dot(self.weight_input_to_hidden.transpose(),numpy.insert(input_data,0,1))
         hidden_activations = list(map(sigmoid,i_to_h_dot))
 
-        h_to_o_dot = numpy.dot(self.weight_hidden_to_out.transpose(),[1]+hidden_activations)
+        h_to_o_dot = numpy.dot(self.weight_hidden_to_out.transpose(),numpy.insert(hidden_activations,0,1))
         out_activations = list(map(sigmoid,h_to_o_dot))
 
         if(return_hidden == True):
