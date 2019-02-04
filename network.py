@@ -114,7 +114,7 @@ class NeuralNet:
 
         # loop through each row of data
         for data_index in range(numpy.shape(input_data)[0]):
-            print("Epoch {} - train: {} data entry {}".format(str(self.epoch),set_name,str(data_index)))
+            print("Epoch {} - train: data entry {}".format(str(self.epoch),str(data_index)))
 
             t = [EXPECTED_LOW]*self.size_output
             t[targets[data_index]] = EXPECTED_HIGH
