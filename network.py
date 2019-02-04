@@ -94,6 +94,7 @@ class NeuralNet:
     def evaluate(self, set_name, input_data, targets, cmatrix=False):
         # loop through each row of data
         for data_index in range(numpy.shape(input_data)[0]):
+            print("Epoch {} - evaluate: {} data entry {}".format(str(self.epoch),set_name,str(data_index)))
             activation = self.activation(input_data[data_index])
             prediction = activation.index(max(activation))
 
@@ -113,6 +114,8 @@ class NeuralNet:
 
         # loop through each row of data
         for data_index in range(numpy.shape(input_data)[0]):
+            print("Epoch {} - train: {} data entry {}".format(str(self.epoch),set_name,str(data_index)))
+
             t = [EXPECTED_LOW]*self.size_output
             t[targets[data_index]] = EXPECTED_HIGH
 
