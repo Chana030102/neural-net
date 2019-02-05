@@ -60,6 +60,8 @@ class NeuralNet:
     # Back propagation to update weights in network
     def updateWeights(self, input_data, hidden_activations, out_activations, target):
         # Calculate output error terms 
+        print("Output: Activation Size = {} , Targets = {}".format(len(out_activations),len(target)))
+        print("Hidden: Activation Size = {}".format(len(hidden_activations)))
         out_a = numpy.subtract(target,out_activations)
         out_b = numpy.subtract(1,out_activations)
         error_out = numpy.multiply(out_a,out_b)
@@ -74,15 +76,15 @@ class NeuralNet:
 
         # calculate hidden-to-out weight deltas
         out_a = numpy.multiply(error_out,self.learn_rate)
-        out_a = numpy.multiply(out_a,[1]+hidden_activations)
+        out_a = numpy.multiply(out_a,numpy.asmatrix(numpy.insert(hidden_activations,0,1)).transpose())
         out_b = numpy.multiply(self.momentum,self.weight_hidden_to_out_prevdelta)
-        ho_delta = numpy.add(numpy.asmatrix(out_a).transpose(),out_b)
+        ho_delta = numpy.add(out_a,out_b)
 
         # calculate input-to-hidden weight deltas
         hidden_a = numpy.multiply(error_hidden,self.learn_rate)
-        hidden_a = numpy.multiply(numpy.asmatrix(hidden_a).transpose(),[1]+input_data)
+        hidden_a = numpy.multiply(numpy.asmatrix(hidden_a).transpose(),numpy.insert(input_data,0,1))
         hidden_b = numpy.multiply(self.momentum,self.weight_input_to_hidden_prevdelta)
-        ih_delta = numpy.add(numpy.transpose(hidden_a),hidden_b)
+        ih_delta = numpy.add(hidden_a,hidden_b)
 
         # apply weight deltas to current weights and save new deltas as previous
         self.weight_hidden_to_out = numpy.add(self.weight_hidden_to_out,ho_delta)
@@ -120,6 +122,8 @@ class NeuralNet:
             t[targets[data_index]] = EXPECTED_HIGH
 
             out, hidden = self.activation(input_data[data_index],return_hidden=True)
+            print("Output activation size: {}".format(len(out)))
+            print("Hidden activation size: {}".format(len(hidden)))
             self.updateWeights(input_data,hidden,out,t)
         
         self.epoch += 1
