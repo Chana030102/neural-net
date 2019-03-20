@@ -105,6 +105,12 @@ for e in range(MAX_EPOCH):
 
 # Observe 50th epoch accuracy results
 # Create confusion matrix for test data testing
+for i in range(t1):
+    print("Train file: {}".format(i))
+    traind = pickle.load(open(PATH+TITLE_TRAIN+str(i),'rb'))
+    net.evaluate(TITLE_TRAIN,traind,trainl[i*increment:(i+1)*increment])
+    del traind
+
 print("Running {} and generating confusion matrix".format(net.epoch))
 for i in range(t2):
     print("Test file: {}".format(i))
