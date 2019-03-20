@@ -138,5 +138,5 @@ class NeuralNet:
     # output confusion matrix to CSV file
     def report_confusion_matrix(self,name):
         file_name = name + '_cmatrix.csv'
-        np.savetxt(file_name,self.c_matrix,delimiter=',')
+        np.savetxt(file_name,self.c_matrix.astype(int),delimiter=',')
         print(file_name + " has been created\n")
