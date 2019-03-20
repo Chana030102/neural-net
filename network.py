@@ -129,7 +129,7 @@ class NeuralNet:
             out, hidden = self.activation(input_data[data_index],return_hidden=True)
             print("Output activation size: {}".format(len(out)))
             print("Hidden activation size: {}".format(len(hidden)))
-            self.updateWeights(input_data,hidden,out,t)
+            self.updateWeights(input_data[data_index],hidden,out,t)
         
         self.epoch += 1
 
