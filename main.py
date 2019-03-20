@@ -39,82 +39,68 @@ MAX_EPOCH = 2
 INPUT_MAX = 255
 increment = 1000
 
-# Pandas version of Importing and processing
-## Import data
-#traind = pandas.read_csv(TRAIN_FILE,header=None)
-#testd  = pandas.read_csv(TEST_FILE ,header=None)
-#
-## Preprocess data 
-#traind.sample(frac=1)      # shuffle training data
-#trainl = traind[0].values # Save targets as a separate dataframe/array
-#traind = traind.drop(columns=0)     # Remove column with target info
-#traind = traind.values # convert to np array
-#traind = np.divide(traind, INPUT_MAX) # scale inputs between 0 and 1 by dividing by input max value
-#
-#testl = testd[0].values # Save targets as a separate dataframe/array
-#testd = testd.drop(columns=0)    # Remove column with target info
-#testd = testd.values # convert to np array
-#testd = np.divide(testd, INPUT_MAX)
-
 # Import data
-#traind = np.loadtxt(TRAIN_FILE,delimiter=DELIMITER)
+traind = np.loadtxt(TRAIN_FILE,delimiter=DELIMITER)
 testd  = np.loadtxt(TEST_FILE,delimiter=DELIMITER)
 
 # Pre-process data
 # Shuffle, separate labels, and scale
-'''
 np.random.shuffle(traind)
 trainl = traind[:,0]
 traind = np.delete(traind,0,axis=1)
 traind = np.divide(traind, INPUT_MAX)
-'''
+
 np.random.shuffle(testd)
 testl  = testd[:,0]
 testd  = np.delete(testd,0,axis=1)
 testd  = np.divide(testd,INPUT_MAX)
 
-#t1 = int(len(traind)/increment)
+t1 = int(len(traind)/increment)
 t2 = int(len(testd)/increment)
-'''
+
 for i in range(t1):
     pickle.dump(traind[(i*increment):((i+1)*increment)],open(TITLE_TRAIN+str(i),'wb'))
-'''
+
 for i in range(t2):
     pickle.dump(testd[(i*increment):((i+1)*increment)],open(TITLE_TEST+str(i),'wb'))
 
 input_size = len(testd[0]) # how many inputs are in one row
-del testd#,traind
+del testd,traind
 
 net = network.NeuralNet(input_size,hidden_layer_size,output_layer_size,momentum,learning_rate)
 
 # Observe inital epoch 0 accuracy and train for 50 epochs
 # Observe accuracy after each epoch
 for e in range(MAX_EPOCH):
-    '''
+    
     for i in range(t1):
         print("Train file: {}".format(i))
         traind = pickle.load(open(TITLE_TRAIN+str(i),'rb'))
         net.evaluate(TITLE_TRAIN,traind,trainl[i*increment:(i+1)*increment])
         del traind
-    '''
+    
     for i in range(t2):
         print("Test file: {}".format(i))
         testd = pickle.load(open(TITLE_TEST+str(i),'rb'))
-        #net.evaluate(TITLE_TEST,testd,testl[i*increment:(i+1)*increment])
-        net.train(testd,testl[i*increment:(i+1)*increment])
+        net.evaluate(TITLE_TEST,testd,testl[i*increment:(i+1)*increment])
         del testd
-    '''
+    
     for i in range(t1):
         print("Train file: {}".format(i))
         traind = pickle.load(open(TITLE_TRAIN+str(i),'rb'))
         net.train(traind,trainl[i*increment:(i+1)*increment])
         del traind
-'''
+
+    net.epoch += 1
+
 # Observe 50th epoch accuracy results
 # Create confusion matrix for test data testing
-#net.evaluate(TITLE_TRAIN,traind,trainl)
-net.evaluate(TITLE_TEST,testd,testl,True)
+for i in range(t2):
+    print("Test file: {}".format(i))
+    testd = pickle.load(open(TITLE_TEST+str(i),'rb'))
+    net.evaluate(TITLE_TEST,testd,testl[i*increment:(i+1)*increment],True)
+    net.train(testd,testl[i*increment:(i+1)*increment])
+    del testd
 
 net.report_accuracy(TITLE)
 net.report_confusion_matrix(TITLE)
-

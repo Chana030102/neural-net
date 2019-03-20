@@ -63,8 +63,6 @@ class NeuralNet:
     # Back propagation to update weights in network
     def updateWeights(self, input_data, hidden_activations, out_activations, target):
         # Calculate output error terms 
-        print("Output: Activation Size = {} , Targets = {}".format(len(out_activations),len(target)))
-        print("Hidden: Activation Size = {}".format(len(hidden_activations)))
         out_a = np.subtract(target,out_activations)
         out_b = np.subtract(1,out_activations)
         error_out = np.multiply(out_a,out_b)
@@ -127,11 +125,9 @@ class NeuralNet:
             t[int(targets[data_index])] = EXPECTED_HIGH
 
             out, hidden = self.activation(input_data[data_index],return_hidden=True)
-            print("Output activation size: {}".format(len(out)))
-            print("Hidden activation size: {}".format(len(hidden)))
             self.updateWeights(input_data[data_index],hidden,out,t)
         
-        self.epoch += 1
+        #self.epoch += 1
 
     # output accuracy table to CSV file
     def report_accuracy(self,name):
