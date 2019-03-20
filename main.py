@@ -116,7 +116,6 @@ for i in range(t2):
     print("Test file: {}".format(i))
     testd = pickle.load(open(PATH+TITLE_TEST+str(i),'rb'))
     net.evaluate(TITLE_TEST,testd,testl[i*increment:(i+1)*increment],True)
-    net.train(testd,testl[i*increment:(i+1)*increment])
     del testd
 
 print("Generating accuracy and confusion matrix files")
