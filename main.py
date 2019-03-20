@@ -7,10 +7,26 @@
 
 import numpy as np 
 import pandas, pickle
-import network
+import network, sys
 
 np.seterr(all='print')
-TITLE      = "e1_100"
+NAME      = input("Enter name of experiment: ")
+
+if (len(sys.argv) != 1):
+    if sys.argv[1] == '-c':
+        hidden_layer_size = int(input("Enter size of hidden layer: "))
+        momentum = int(input("Enter NN momentum: "))
+        learning_rate = int(input("Enter NN learning rate: "))
+    else:
+        print("{} is not a valid option. You can use \"-c\" to customize the NN run.".format(sys.argv[1]))
+        sys.exit(0)
+
+else:
+    hidden_layer_size = 100
+    momentum = 0.9
+    learning_rate = 0.1
+
+TITLE = "{}_h={}_m={}_lr={}".format(NAME,hidden_layer_size,momentum,learning_rate)
 
 TRAIN_FILE = "../mnist_train.csv"
 TEST_FILE  = "../mnist_test.csv"
@@ -18,14 +34,10 @@ TITLE_TRAIN= 'train'
 TITLE_TEST = 'test'
 DELIMITER  = ','
 
+output_layer_size = 10
 MAX_EPOCH = 2 
 INPUT_MAX = 255
 increment = 1000
-
-hidden_layer_size = 100
-output_layer_size = 10
-momentum = 0.9
-learning_rate = 0.1
 
 # Pandas version of Importing and processing
 ## Import data
