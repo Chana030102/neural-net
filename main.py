@@ -40,15 +40,19 @@ INPUT_MAX = 255
 increment = 1000
 
 # Make directory if it doesn't exist
+print("All generated files will be stored in {}".format(PATH))
 if os.path.exists(PATH) == False:
     os.mkdir(PATH)
+    print("Directory created")
 
 # Import data
+print("Importing Data...")
 traind = np.loadtxt(TRAIN_FILE,delimiter=DELIMITER)
 testd  = np.loadtxt(TEST_FILE,delimiter=DELIMITER)
 
 # Pre-process data
 # Shuffle, separate labels, and scale
+print("Processing data for NN...")
 np.random.shuffle(traind)
 trainl = traind[:,0]
 traind = np.delete(traind,0,axis=1)
@@ -62,6 +66,7 @@ testd  = np.divide(testd,INPUT_MAX)
 t1 = int(len(traind)/increment)
 t2 = int(len(testd)/increment)
 
+print("Generating pickle dump files for data...")
 for i in range(t1):
     pickle.dump(traind[(i*increment):((i+1)*increment)],open(PATH+TITLE_TRAIN+str(i),'wb'))
 
@@ -71,6 +76,7 @@ for i in range(t2):
 input_size = len(testd[0]) # how many inputs are in one row
 del testd,traind
 
+print("Creating NN and starting experiment...")
 net = network.NeuralNet(input_size,hidden_layer_size,output_layer_size,momentum,learning_rate)
 
 # Observe inital epoch 0 accuracy and train for 50 epochs
@@ -99,6 +105,7 @@ for e in range(MAX_EPOCH):
 
 # Observe 50th epoch accuracy results
 # Create confusion matrix for test data testing
+print("Running {} and generating confusion matrix".format(net.epoch))
 for i in range(t2):
     print("Test file: {}".format(i))
     testd = pickle.load(open(PATH+TITLE_TEST+str(i),'rb'))
@@ -106,5 +113,6 @@ for i in range(t2):
     net.train(testd,testl[i*increment:(i+1)*increment])
     del testd
 
+print("Generating accuracy and confusion matrix files")
 net.report_accuracy(PATH+NAME)
 net.report_confusion_matrix(PATH+NAME)
