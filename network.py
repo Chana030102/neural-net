@@ -86,7 +86,7 @@ class NeuralNet:
         hidden_a = np.multiply(error_hidden,self.learn_rate)
         hidden_a = np.multiply(np.asmatrix(hidden_a).transpose(),np.insert(input_data,0,1))
         hidden_b = np.multiply(self.momentum,self.weight_input_to_hidden_prevdelta)
-        ih_delta = np.add(hidden_a,hidden_b)
+        ih_delta = np.add(hidden_a.transpose(),hidden_b)
 
         # apply weight deltas to current weights and save new deltas as previous
         self.weight_hidden_to_out = np.add(self.weight_hidden_to_out,ho_delta)
