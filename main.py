@@ -9,7 +9,7 @@ import numpy as np
 import pandas, pickle
 import network, sys, os
 
-np.seterr(all='print')
+np.seterr(all='ignore')
 NAME      = input("Enter name of experiment: ")
 
 if (len(sys.argv) != 1):
