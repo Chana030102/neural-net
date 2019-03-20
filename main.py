@@ -15,8 +15,8 @@ NAME      = input("Enter name of experiment: ")
 if (len(sys.argv) != 1):
     if sys.argv[1] == '-c':
         hidden_layer_size = int(input("Enter size of hidden layer: "))
-        momentum = int(input("Enter NN momentum: "))
-        learning_rate = int(input("Enter NN learning rate: "))
+        momentum = float(input("Enter NN momentum: "))
+        learning_rate = float(input("Enter NN learning rate: "))
     else:
         print("{} is not a valid option. You can use \"-c\" to customize the NN run.".format(sys.argv[1]))
         sys.exit(0)
