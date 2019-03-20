@@ -133,10 +133,10 @@ class NeuralNet:
     def report_accuracy(self,name):
         file_name = name + '_accuracy.csv'
         self.accuracy.to_csv(file_name)
-        print(file_name + "has been created\n")
+        print(file_name + " has been created\n")
 
     # output confusion matrix to CSV file
     def report_confusion_matrix(self,name):
         file_name = name + '_cmatrix.csv'
-        self.c_matrix.to_csv(file_name)
-        print(file_name + "has been created\n")
+        np.savetxt(file_name,self.c_matrix,delimiter=',')
+        print(file_name + " has been created\n")
