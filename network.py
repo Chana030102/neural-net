@@ -111,7 +111,7 @@ class NeuralNet:
 
             if(cmatrix == True):
                 # Update cmatrix
-                self.c_matrix[targets[data_index],prediction] += 1
+                self.c_matrix[int(targets[data_index]),prediction] += 1
 
     # Train network
     # targets will be an array of digits for MNIST and needs to be converted to matrix of 0.1s and 0.9s

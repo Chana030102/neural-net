@@ -35,7 +35,7 @@ TITLE_TEST = 'test'
 DELIMITER  = ','
 
 output_layer_size = 10
-MAX_EPOCH = 2 
+MAX_EPOCH = 1 
 INPUT_MAX = 255
 increment = 1000
 
