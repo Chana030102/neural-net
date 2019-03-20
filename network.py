@@ -49,9 +49,10 @@ class NeuralNet:
     # Forward propagation activation for network
     def activation(self, input_data, return_hidden=False):
         i_to_h_dot = np.dot(self.weight_input_to_hidden.transpose(),np.insert(input_data,0,1))
+        #i_to_h_dot = np.outer(self.weight_input_to_hidden,np.append(input_data,1))
         hidden_activations = list(map(sigmoid,i_to_h_dot))
 
-        h_to_o_dot = np.dot(self.weight_hidden_to_out.transpose(),np.insert(hidden_activations,0,1))
+        h_to_o_dot = np.dot(self.weight_hidden_to_out.transpose(),np.append(hidden_activations,1))
         out_activations = list(map(sigmoid,h_to_o_dot))
 
         if(return_hidden == True):
@@ -72,19 +73,21 @@ class NeuralNet:
         # calculate hidden error terms
         hidden_a = np.subtract(1,hidden_activations)
         # indexing [1:] to ignore bias weight because bias does not need error term
-        hidden_b = np.dot(self.weight_hidden_to_out[1:],error_out)
+        hidden_b = np.dot(self.weight_hidden_to_out[:-1],error_out)
         error_hidden = np.multiply(hidden_a,hidden_b)
         error_hidden = np.multiply(error_hidden,hidden_activations)
 
         # calculate hidden-to-out weight deltas
         out_a = np.multiply(error_out,self.learn_rate)
-        out_a = np.multiply(out_a,np.asmatrix(np.insert(hidden_activations,0,1)).transpose())
+        #out_a = np.multiply(out_a,np.asmatrix(np.insert(hidden_activations,0,1)).transpose())
+        out_a = np.outer(np.append(hidden_activations,1),out_a)
         out_b = np.multiply(self.momentum,self.weight_hidden_to_out_prevdelta)
         ho_delta = np.add(out_a,out_b)
 
         # calculate input-to-hidden weight deltas
         hidden_a = np.multiply(error_hidden,self.learn_rate)
-        hidden_a = np.multiply(np.asmatrix(hidden_a).transpose(),np.insert(input_data,0,1))
+        #hidden_a = np.multiply(np.asmatrix(hidden_a).transpose(),np.insert(input_data,0,1))
+        hidden_a = np.outer(hidden_a,np.append(input_data,1))
         hidden_b = np.multiply(self.momentum,self.weight_input_to_hidden_prevdelta)
         ih_delta = np.add(hidden_a.transpose(),hidden_b)
 

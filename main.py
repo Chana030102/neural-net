@@ -57,34 +57,62 @@ increment = 1000
 #testd = np.divide(testd, INPUT_MAX)
 
 # Import data
-traind = np.loadtxt(TRAIN_FILE,delimiter=DELIMITER)
+#traind = np.loadtxt(TRAIN_FILE,delimiter=DELIMITER)
 testd  = np.loadtxt(TEST_FILE,delimiter=DELIMITER)
 
 # Pre-process data
 # Shuffle, separate labels, and scale
+'''
 np.random.shuffle(traind)
 trainl = traind[:,0]
 traind = np.delete(traind,0,axis=1)
 traind = np.divide(traind, INPUT_MAX)
-
+'''
 np.random.shuffle(testd)
 testl  = testd[:,0]
 testd  = np.delete(testd,0,axis=1)
 testd  = np.divide(testd,INPUT_MAX)
 
-input_size = len(traind[0]) # how many inputs are in one row
+#t1 = int(len(traind)/increment)
+t2 = int(len(testd)/increment)
+'''
+for i in range(t1):
+    pickle.dump(traind[(i*increment):((i+1)*increment)],open(TITLE_TRAIN+str(i),'wb'))
+'''
+for i in range(t2):
+    pickle.dump(testd[(i*increment):((i+1)*increment)],open(TITLE_TEST+str(i),'wb'))
+
+input_size = len(testd[0]) # how many inputs are in one row
+del testd#,traind
+
 net = network.NeuralNet(input_size,hidden_layer_size,output_layer_size,momentum,learning_rate)
 
 # Observe inital epoch 0 accuracy and train for 50 epochs
 # Observe accuracy after each epoch
 for e in range(MAX_EPOCH):
-    net.evaluate(TITLE_TRAIN,traind,trainl)
-    net.evaluate(TITLE_TEST,testd,testl)
-    net.train(traind,trainl)
-
+    '''
+    for i in range(t1):
+        print("Train file: {}".format(i))
+        traind = pickle.load(open(TITLE_TRAIN+str(i),'rb'))
+        net.evaluate(TITLE_TRAIN,traind,trainl[i*increment:(i+1)*increment])
+        del traind
+    '''
+    for i in range(t2):
+        print("Test file: {}".format(i))
+        testd = pickle.load(open(TITLE_TEST+str(i),'rb'))
+        #net.evaluate(TITLE_TEST,testd,testl[i*increment:(i+1)*increment])
+        net.train(testd,testl[i*increment:(i+1)*increment])
+        del testd
+    '''
+    for i in range(t1):
+        print("Train file: {}".format(i))
+        traind = pickle.load(open(TITLE_TRAIN+str(i),'rb'))
+        net.train(traind,trainl[i*increment:(i+1)*increment])
+        del traind
+'''
 # Observe 50th epoch accuracy results
 # Create confusion matrix for test data testing
-net.evaluate(TITLE_TRAIN,traind,trainl)
+#net.evaluate(TITLE_TRAIN,traind,trainl)
 net.evaluate(TITLE_TEST,testd,testl,True)
 
 net.report_accuracy(TITLE)
