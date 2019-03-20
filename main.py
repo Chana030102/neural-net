@@ -16,13 +16,14 @@ if (len(sys.argv) != 1):
     if sys.argv[1] == '-c':
         DIVIDE = 1
         hidden_layer_size = int(input("Enter size of hidden layer: "))
-        momentum = int(input("Enter NN momentum: "))
-        learning_rate = int(input("Enter NN learning rate: "))
+        momentum = float(input("Enter NN momentum: "))
+        learning_rate = float(input("Enter NN learning rate: "))
     elif sys.argv[1] == '-e3':
             DIVIDE = int(input("Enter how many parts to divide training data (we'll only use 1 of <input>): "))
             hidden_layer_size = 100
             momentum = 0.9
             learning_rate = 0.1
+
     else:
         print("{} is not a valid option. You can use \"-c\" to customize the NN run.".format(sys.argv[1]))
         sys.exit(0)
