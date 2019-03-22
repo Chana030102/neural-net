@@ -4,13 +4,24 @@
 # CS 445 Machine Learning (Winter 2019)
 # Homework 2
 #
+# Users can run this script without any arguments to observe
+# the experiment with the following default values:
+# - Hidden unit count = 100
+# - Momentum = 0.9
+# - Learning rate = 0.1
+#
+# Users can also use the following commandline argument inputs for
+# different experiments:
+#   -c      Be able to customize hidden units, momentum, and learning rate
+#   -e3     Run experiment 3 to divide the total training set
+
 
 import numpy as np 
 import pandas, pickle
 import network, sys, os
 
 np.seterr(all='ignore')
-NAME      = input("Enter name of experiment: ")
+NAME      = input("Enter name of experiment: ") # used to name files for each different run
 
 if (len(sys.argv) != 1):
     if sys.argv[1] == '-c':

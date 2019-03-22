@@ -43,13 +43,11 @@ class NeuralNet:
         self.weight_hidden_to_out_prevdelta = np.zeros((self.size_hidden+1,self.size_output))
 
         self.accuracy = pandas.DataFrame(0,index=range(0,51),columns=['test_c','test_i','train_c','train_i'])
-        #self.c_matrix = pandas.DataFrame(0,index=range(0,self.size_output),columns=range(0,self.size_output))
         self.c_matrix = np.zeros((num_outputs,num_outputs))
 
     # Forward propagation activation for network
     def activation(self, input_data, return_hidden=False):
         i_to_h_dot = np.dot(self.weight_input_to_hidden.transpose(),np.insert(input_data,0,1))
-        #i_to_h_dot = np.outer(self.weight_input_to_hidden,np.append(input_data,1))
         hidden_activations = list(map(sigmoid,i_to_h_dot))
 
         h_to_o_dot = np.dot(self.weight_hidden_to_out.transpose(),np.append(hidden_activations,1))
@@ -77,14 +75,12 @@ class NeuralNet:
 
         # calculate hidden-to-out weight deltas
         out_a = np.multiply(error_out,self.learn_rate)
-        #out_a = np.multiply(out_a,np.asmatrix(np.insert(hidden_activations,0,1)).transpose())
         out_a = np.outer(np.append(hidden_activations,1),out_a)
         out_b = np.multiply(self.momentum,self.weight_hidden_to_out_prevdelta)
         ho_delta = np.add(out_a,out_b)
 
         # calculate input-to-hidden weight deltas
         hidden_a = np.multiply(error_hidden,self.learn_rate)
-        #hidden_a = np.multiply(np.asmatrix(hidden_a).transpose(),np.insert(input_data,0,1))
         hidden_a = np.outer(hidden_a,np.append(input_data,1))
         hidden_b = np.multiply(self.momentum,self.weight_input_to_hidden_prevdelta)
         ih_delta = np.add(hidden_a.transpose(),hidden_b)
