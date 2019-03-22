@@ -14,14 +14,22 @@ NAME      = input("Enter name of experiment: ")
 
 if (len(sys.argv) != 1):
     if sys.argv[1] == '-c':
+        DIVIDE = 1
         hidden_layer_size = int(input("Enter size of hidden layer: "))
         momentum = float(input("Enter NN momentum: "))
         learning_rate = float(input("Enter NN learning rate: "))
+    elif sys.argv[1] == '-e3':
+            DIVIDE = int(input("Enter how many parts to divide training data (we'll only use 1 of <input>): "))
+            hidden_layer_size = 100
+            momentum = 0.9
+            learning_rate = 0.1
+
     else:
         print("{} is not a valid option. You can use \"-c\" to customize the NN run.".format(sys.argv[1]))
         sys.exit(0)
 
 else:
+    DIVIDE = 1
     hidden_layer_size = 100
     momentum = 0.9
     learning_rate = 0.1
@@ -63,7 +71,7 @@ testl  = testd[:,0]
 testd  = np.delete(testd,0,axis=1)
 testd  = np.divide(testd,INPUT_MAX)
 
-t1 = int(len(traind)/increment)
+t1 = int(len(traind)/increment/DIVIDE)
 t2 = int(len(testd)/increment)
 
 print("Generating pickle dump files for data...")
