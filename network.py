@@ -17,7 +17,7 @@ WEIGHT_HIGH   = 0.05
 EXPECTED_LOW  = 0.1
 EXPECTED_HIGH = 0.9
 
-sigmoid = lambda x : 1/(1+math.exp(-x))
+sigmoid = lambda x : 1/(1+np.exp(-x))
 
 class NeuralNet:
 
